@@ -29,12 +29,17 @@ class Application(object):
     _middlewares: List[Tuple[MiddlewareType, Callable]]
     config: Config
 
-    def __init__(self):
+    bp_prefix: str = ''
+
+    def __init__(self, bp_prefix: str = None):
         self._init_config()
         self._init_logging()
         self._init_routes()
         self._init_hooks()
         self._init_middlewares()
+
+        if bp_prefix is not None:
+            self.bp_prefix = bp_prefix
 
     def _init_config(self):
         self.config = Config(load_env=True)
@@ -60,8 +65,13 @@ class Application(object):
     def _apply_routes(self):
         self._routes.append(Route(HealthEndpoint(context), '/health'))
 
-        for r in self._routes:
-            self._server.add_route(r.handler, r.uri, methods=r.methods, strict_slashes=r.strict_slashes, name=r.name)
+        if len(self.bp_prefix) == 0:
+            [self._server.add_route(r.handler, r.uri, methods=r.methods, strict_slashes=r.strict_slashes, name=r.name) for r in self._routes]
+        else:
+            blueprint = Blueprint(self.bp_prefix, url_prefix=self.bp_prefix)
+
+            [blueprint.add_route(r.handler, r.uri, methods=r.methods, strict_slashes=r.strict_slashes, name=r.name) for r in self._routes]
+            self._server.register_blueprint(blueprint)
 
     def _apply_hooks(self):
         for hook_name, hook_handler in self._hooks:
@@ -134,9 +144,6 @@ class Application(object):
 
         self._server.run(host=self.config.APP_HOST, port=self.config.APP_PORT, debug=self.config.DEBUG, workers=self.config.WORKERS)
 
-def get_application() -> Application:
-    return Application()
-
 if __name__ == '__main__':
-    a = get_application()
+    a = Application()
     a.run()
