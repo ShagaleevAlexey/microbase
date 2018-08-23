@@ -5,6 +5,8 @@ from .context import Context
 from sanic.request import Request
 from sanic.response import BaseHTTPResponse, text, json
 
+from http import HTTPStatus
+
 # from .context import Context
 
 class Endpoint(object, metaclass=abc.ABCMeta):
@@ -21,7 +23,10 @@ class Endpoint(object, metaclass=abc.ABCMeta):
         return await self.handle(request, *args, kwargs)
 
     def _make_response_json(self, code: int = 200, message: str = ''):
-        return json(dict(code=code, message=message), code)
+        if isinstance(message, str) and len(message) == 0:
+            message = HTTPStatus(code).phrase
+
+        return json(dict(code=code, message=str(message)), code)
 
     @abc.abstractmethod
     async def handle(self, request: Request, *args, **kwargs) -> BaseHTTPResponse:
