@@ -15,7 +15,7 @@ from microbase.exception import ApplicationError, RouteError, log_uncaught
 from microbase.route import Route
 from microbase.endpoint import Endpoint, HealthEndpoint
 from microbase.context import _context_mutable, context
-from microbase.middlewares import MiddlewareType
+from microbase.middleware import MiddlewareType
 
 log = get_logger('microbase')
 
