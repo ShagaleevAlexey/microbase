@@ -42,21 +42,17 @@ def check_auth(func):
                 }
             }
 
-            if request.method == 'GET':
-                if request.match_info is None:
-                    request.match_info = {}
+            request.match_info.update(params)
 
-                request.match_info.update(params)
-            else:
-                if request.json is None:
-                    request.json = {}
-
+            if 'application/json' in request.content_type:
                 request.json.update(params)
-
-            return await func(self, request, *args, **kwargs)
         except helpers.ExpiredSignatureError as e:
             return _make_response_json(401)
         except helpers.ExpiredSignatureError as e:
             return _make_response_json(500)
+        except Exception as e:
+            return _make_response_json(500)
+
+        return await func(self, request, *args, **kwargs)
 
     return handler
