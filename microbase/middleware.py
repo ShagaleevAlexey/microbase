@@ -45,7 +45,8 @@ def check_auth(func):
             request.match_info.update(params)
 
             if 'application/json' in request.content_type:
-                request.json.update(params)
+                if request.json is not None:
+                    request.json.update(params)
         except helpers.ExpiredSignatureError as e:
             return _make_response_json(401)
         except helpers.ExpiredSignatureError as e:
