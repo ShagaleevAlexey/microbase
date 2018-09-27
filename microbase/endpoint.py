@@ -3,7 +3,7 @@ import  abc
 from .context import Context
 
 from sanic.request import Request
-from sanic.response import BaseHTTPResponse, text, json
+from sanic.response import BaseHTTPResponse, text, json, file
 
 from http import HTTPStatus
 
@@ -30,6 +30,9 @@ class Endpoint(object, metaclass=abc.ABCMeta):
             message = HTTPStatus(code).phrase
 
         return json(dict(code=code, message=str(message)), code)
+
+    async def _make_response_file(self, filepath: str):
+        return await file(filepath)
 
     @abc.abstractmethod
     async def handle(self, request: Request, *args, **kwargs) -> BaseHTTPResponse:
