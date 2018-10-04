@@ -1,10 +1,12 @@
 import sys
 from structlog import get_logger
 
+
 class Errors:
     UnknowError = 'Unknown error'
     NotSpecified = 'Not specified'
     NotMatchSpecs = 'Does not match specs'
+
 
 class ApplicationError(Exception):
     pass
@@ -13,7 +15,9 @@ class ApplicationError(Exception):
 class RouteError(Exception):
     pass
 
+
 log = get_logger('service')
+
 
 def log_uncaught(exc_type, exc_value, exc_tb):
     import traceback
