@@ -27,7 +27,7 @@ def check_auth(func):
         jwt_token = request.headers.get('authorization', None)
 
         try:
-            if jwt_token is None:
+            if jwt_token is None or not jwt_token: #add behavior when empty jwt_token reach
                 return _make_response_json(401)
 
             payload = helpers.jwt_payload(jwt_token)

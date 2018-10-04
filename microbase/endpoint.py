@@ -1,4 +1,4 @@
-import  abc
+import abc
 
 from .context import Context
 
@@ -6,6 +6,7 @@ from sanic.request import Request
 from sanic.response import BaseHTTPResponse, text, json, file
 
 from http import HTTPStatus
+
 
 # from .context import Context
 
