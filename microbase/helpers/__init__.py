@@ -12,7 +12,7 @@
 #     return (keccack256.hexdigest(), salt)
 
 import jwt
-from jwt import ExpiredSignatureError
+from jwt import ExpiredSignatureError, InvalidSignatureError
 
 __JWT_SECRET = '65zkFWQV'
 

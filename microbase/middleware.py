@@ -49,8 +49,8 @@ def check_auth(func):
                     request.json.update(params)
         except helpers.ExpiredSignatureError as e:
             return _make_response_json(401)
-        except helpers.ExpiredSignatureError as e:
-            return _make_response_json(500)
+        except helpers.InvalidSignatureError as e:
+            return _make_response_json(401)
         except Exception as e:
             return _make_response_json(500)
 
