@@ -26,3 +26,4 @@ class GeneralConfig(BaseConfig):
     LOG_FORMAT: LogFormat = LogFormat.json
     LOG_LEVEL: str = 'INFO'
     WORKERS: int = 1
+    REQUEST_MAX_SIZE = '20000000'
