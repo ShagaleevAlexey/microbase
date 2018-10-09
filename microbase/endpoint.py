@@ -82,7 +82,9 @@ class BasicEndpoint(Endpoint):
 
 
 class AuthEndpoint(BasicEndpoint):
-
+    """
+    Класс endpoint'а для проверки авторизации запроса
+    """
     async def handle(self, request: Request, *args, **kwargs) -> BaseHTTPResponse:
         params: dict
         jwt_token = request.headers.get('authorization', None)
@@ -108,6 +110,7 @@ class AuthEndpoint(BasicEndpoint):
             return self._make_response_json(500)
 
         return await super(AuthEndpoint, self).handle(request, params, args, kwargs)
+
 
 class HealthEndpoint(Endpoint):
     """
