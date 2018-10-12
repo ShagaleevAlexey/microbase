@@ -91,7 +91,7 @@ class AuthEndpoint(BasicEndpoint):
 
         try:
             if jwt_token is None or not jwt_token:  # add behavior when empty jwt_token reach
-                return _make_response_json(401)
+                return self._make_response_json(401)
 
             payload = helpers.jwt_payload(jwt_token)
             user_id = payload['uid']
@@ -105,6 +105,12 @@ class AuthEndpoint(BasicEndpoint):
         except helpers.ExpiredSignatureError as e:
             return self._make_response_json(401)
         except helpers.InvalidSignatureError as e:
+            return self._make_response_json(401)
+        except helpers.InvalidSignatureError as e:
+            return self._make_response_json(401)
+        except helpers.InvalidTokenError as e:
+            return self._make_response_json(401)
+        except helpers.DecodeError as e:
             return self._make_response_json(401)
         except Exception as e:
             return self._make_response_json(500)
