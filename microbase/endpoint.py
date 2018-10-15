@@ -44,7 +44,10 @@ class Endpoint(object, metaclass=abc.ABCMeta):
 class BasicEndpoint(Endpoint):
 
     async def handle(self, request: Request, auth: dict, *args, **kwargs) -> BaseHTTPResponse:
-        body = request.match_info or {}
+        body = {}
+
+        if request.match_info is not None:
+            body = dict(request.match_info)
 
         if 'application/json' in request.content_type and request.json is not None:
             body.update(request.json)
