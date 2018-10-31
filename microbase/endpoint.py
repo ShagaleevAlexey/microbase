@@ -51,23 +51,23 @@ class BasicEndpoint(Endpoint):
 
         if 'application/json' in request.content_type and request.json is not None:
             body.update(request.json)
+        elif 'multipart/form-data' in request.content_type and request.args is not None and len(request.args) > 0:
+            args = {}
+
+            for key in request.args:
+                value = request.args[key]
+
+                if isinstance(value, list) and len(value) == 1:
+                    value = value[0]
+
+                args[key] = value
+
+            body.update(args)
         else:
             if request.files is not None and len(request.files) > 0:
                 body.update(request.files)
             if request.form is not None and len(request.form) > 0:
                 body.update(request.form)
-            if request.method == 'GET' and request.args is not None and len(request.args) > 0:
-                args = {}
-
-                for key in request.args:
-                    value = request.args[key]
-
-                    if isinstance(value, list) and len(value) == 1:
-                        value = value[0]
-
-                    args[key] = value
-
-                body.update(args)
 
         if auth is not None:
             body['auth'] = auth
