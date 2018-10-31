@@ -43,6 +43,19 @@ class Endpoint(object, metaclass=abc.ABCMeta):
 
 class BasicEndpoint(Endpoint):
 
+    def params_from_dictparams(self, params: dict):
+        args = {}
+
+        for key in params:
+            value = params[key]
+
+            if isinstance(value, list) and len(value) == 1:
+                value = value[0]
+
+            args[key] = value
+
+        return args
+
     async def handle(self, request: Request, auth: dict, *args, **kwargs) -> BaseHTTPResponse:
         body = {}
 
@@ -51,23 +64,23 @@ class BasicEndpoint(Endpoint):
 
         if 'application/json' in request.content_type and request.json is not None:
             body.update(request.json)
-        elif 'multipart/form-data' in request.content_type and request.args is not None and len(request.args) > 0:
-            args = {}
 
-            for key in request.args:
-                value = request.args[key]
-
-                if isinstance(value, list) and len(value) == 1:
-                    value = value[0]
-
-                args[key] = value
+        if request.method == 'GET' and request.args is not None and len(request.args) > 0:
+            args = self.params_from_dictparams(request.args)
 
             body.update(args)
-        else:
-            if request.files is not None and len(request.files) > 0:
-                body.update(request.files)
-            if request.form is not None and len(request.form) > 0:
-                body.update(request.form)
+
+        if request.files is not None and len(request.files) > 0:
+            body.update(request.files)
+
+        if request.form is not None and len(request.form) > 0:
+            args = request.form
+
+            if 'multipart/form-data' in request.content_type:
+                args = self.params_from_dictparams(args)
+
+            body.update(args)
+
 
         if auth is not None:
             body['auth'] = auth
