@@ -124,11 +124,13 @@ class AuthEndpoint(BasicEndpoint):
             payload = helpers.jwt_payload(jwt_token)
             user_id = payload['uid']
             exp = payload['exp']
+            user_type = payload['type']
 
             params = {
                 'access_token': jwt_token,
                 'user_id': user_id,
-                'exp': exp
+                'exp': exp,
+                'user_type': user_type
             }
         except helpers.ExpiredSignatureError as e:
             return self._make_response_json(401)
