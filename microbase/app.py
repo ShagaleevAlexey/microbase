@@ -3,12 +3,6 @@ import sys
 from typing import List, Tuple, Callable, Sequence, Type, Union, ClassVar
 
 import microbase
-
-from sanic import Sanic, Blueprint
-from sanic.config import Config
-from sanic.exceptions import URLBuildError
-from structlog import get_logger
-
 from microbase.config import GeneralConfig, BaseConfig
 from microbase.logging_config import get_logging_config
 from microbase.exception import ApplicationError, RouteError, log_uncaught
@@ -17,7 +11,15 @@ from microbase.endpoint import Endpoint, HealthEndpoint
 from microbase.context import _context_mutable, context
 from microbase.middleware import MiddlewareType
 
+from sanic import Sanic, Blueprint
+from sanic.config import Config
+from sanic.exceptions import URLBuildError
+from structlog import get_logger
+
+from microbase_auth import AuthManager, AuthSignatureType
+
 log = get_logger('microbase')
+
 
 class Application(object):
     """
@@ -89,6 +91,12 @@ class Application(object):
         self._apply_hooks()
         self._apply_middlewares()
 
+        auth = AuthManager()
+        auth.set_signature(self.config.USER_JWT_SIGNATURE, AuthSignatureType.User)
+        auth.set_signature(self.config.SERVICE_JWT_SIGNATURE, AuthSignatureType.Service)
+
+        self.add_to_context('auth', auth)
+
     def add_config(self, config_obj: ClassVar[BaseConfig]):
         """
         Add application config
@@ -143,6 +151,7 @@ class Application(object):
         self._prepare_server()
 
         self._server.run(host=self.config.APP_HOST, port=self.config.APP_PORT, debug=self.config.DEBUG, workers=self.config.WORKERS)
+
 
 if __name__ == '__main__':
     a = Application()

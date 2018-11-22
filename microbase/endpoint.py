@@ -1,13 +1,13 @@
 import abc
+from http import HTTPStatus
 
 from . import helpers
 from .context import Context
 
+from microbase_auth import AuthManager
+
 from sanic.request import Request
 from sanic.response import BaseHTTPResponse, text, json, file
-
-from http import HTTPStatus
-
 
 # from .context import Context
 
@@ -121,7 +121,8 @@ class AuthEndpoint(BasicEndpoint):
             if jwt_token is None or not jwt_token:  # add behavior when empty jwt_token reach
                 return self._make_response_json(401)
 
-            payload = helpers.jwt_payload(jwt_token)
+            auth: AuthManager = self.context.auth
+            payload, _ = auth.get_any_payload(jwt_token)
             user_id = payload['uid']
             exp = payload['exp']
             user_type = payload['type']

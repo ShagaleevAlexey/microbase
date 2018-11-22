@@ -11,19 +11,3 @@
 #
 #     return (keccack256.hexdigest(), salt)
 
-import jwt
-from jwt import ExpiredSignatureError, InvalidSignatureError, InvalidTokenError, DecodeError
-
-__JWT_SECRET = '65zkFWQV'
-
-
-def jwt_token(payload: dict, algo: str = 'HS256') -> str:
-    token = jwt.encode(payload, __JWT_SECRET, algo).decode('utf-8')
-
-    return token
-
-
-def jwt_payload(token: str, algo: str = 'HS256') -> dict:
-    payload = jwt.decode(token, __JWT_SECRET, algorithms=[algo])
-
-    return payload

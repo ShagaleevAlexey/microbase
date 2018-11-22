@@ -17,6 +17,7 @@ class HookNames(Enum):
 
 
 class HookHandler(object):
+
     def __init__(self, app: Application, handler: Callable[[Application, Context, BaseEventLoop], None]):
         super().__init__()
         self._app = app

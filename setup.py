@@ -13,6 +13,7 @@ setup(
         'sanic==0.7.0',
         'sanic-envconfig==1.0.1',
         'python-rapidjson==0.6.3',
-        'structlog==18.1.0'
+        'structlog==18.1.0',
+        'microbase-auth==0.1.0'
     ]
 )
