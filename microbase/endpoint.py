@@ -1,10 +1,12 @@
 import abc
 from http import HTTPStatus
+import json
 
 from . import helpers
 from .context import Context
 
 from microbase_auth import AuthManager
+from microbase_auth.auth import DecodeError, ExpiredSignatureError, InvalidSignatureError, InvalidTokenError
 
 from sanic.request import Request
 from sanic.response import BaseHTTPResponse, text, json, file
@@ -133,15 +135,15 @@ class AuthEndpoint(BasicEndpoint):
                 'exp': exp,
                 'user_type': user_type
             }
-        except helpers.ExpiredSignatureError as e:
+        except ExpiredSignatureError as e:
             return self._make_response_json(401)
-        except helpers.InvalidSignatureError as e:
+        except InvalidSignatureError as e:
             return self._make_response_json(401)
-        except helpers.InvalidSignatureError as e:
+        except InvalidSignatureError as e:
             return self._make_response_json(401)
-        except helpers.InvalidTokenError as e:
+        except InvalidTokenError as e:
             return self._make_response_json(401)
-        except helpers.DecodeError as e:
+        except DecodeError as e:
             return self._make_response_json(401)
         except Exception as e:
             return self._make_response_json(500)
