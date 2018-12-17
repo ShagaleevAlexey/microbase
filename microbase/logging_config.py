@@ -47,7 +47,7 @@ def add_request_data(logger, method_name, event_dict):
     return event_dict
 
 
-timestamper = structlog.processors.TimeStamper(fmt="iso")
+timestamper = structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S.%f")
 
 
 structlog.configure(

@@ -26,16 +26,21 @@ class Endpoint(object, metaclass=abc.ABCMeta):
     async def __call__(self, request: Request, *args, **kwargs):
         return await self.handle(request, *args, kwargs)
 
-    def _make_response_json(self, code: int = 200, message: str = None, data: dict = None):
+    def _make_response_json(self, code: int = 200, message: str = None, data: dict = None) -> BaseHTTPResponse:
         if data is not None:
             return json(data)
 
         if message is None:
             message = HTTPStatus(code).phrase
 
-        return json(dict(code=code, message=str(message)), code)
+        data = {
+            'code': code,
+            'message': message
+        }
 
-    async def _make_response_file(self, filepath: str):
+        return json(data, status=code)
+
+    async def _make_response_file(self, filepath: str) -> BaseHTTPResponse:
         return await file(filepath)
 
     @abc.abstractmethod
@@ -83,31 +88,37 @@ class BasicEndpoint(Endpoint):
 
             body.update(args)
 
-
         if auth is not None:
             body['auth'] = auth
 
+        for header in request.headers:
+            if header[:2].lower() == 'x-':
+                body[header] = request.headers[header]
+
+        return await self._method(request=request, body=body, *args, **kwargs)
+
+    async def _method(self, request: Request, body: dict, *args, **kwargs) -> BaseHTTPResponse:
         if request.method == 'GET':
-            return await self._method_get(request=request, body=body)
+            return await self._method_get(request, body, *args, **kwargs)
         elif request.method == 'POST':
-            return await self._method_post(request=request, body=body)
+            return await self._method_post(request, body, *args, **kwargs)
         elif request.method == 'DELETE':
-            return await self._method_delete(request=request, body=body)
+            return await self._method_delete(request, body, *args, **kwargs)
         elif request.method == 'PUT':
-            return await self._method_put(request=request, body=body)
+            return await self._method_put(request, body, *args, **kwargs)
 
         return self._make_response_json(code=405, message='Method Not Allowed')
 
-    async def _method_get(self, request: Request, *, body: dict):
+    async def _method_get(self, request: Request, body: dict, *args, **kwargs) -> BaseHTTPResponse:
         return self._make_response_json(code=500, message='GET Not Impl')
 
-    async def _method_post(self, request: Request, *, body: dict):
+    async def _method_post(self, request: Request, body: dict, *args, **kwargs) -> BaseHTTPResponse:
         return self._make_response_json(code=500, message='POST Not Impl')
 
-    async def _method_delete(self, request: Request, *, body: dict):
+    async def _method_delete(self, request: Request, body: dict, *args, **kwargs) -> BaseHTTPResponse:
         return self._make_response_json(code=500, message='DELETE Not Impl')
 
-    async def _method_put(self, request: Request, *, body: dict):
+    async def _method_put(self, request: Request, body: dict, *args, **kwargs) -> BaseHTTPResponse:
         return self._make_response_json(code=500, message='PUT Not Impl')
 
 
@@ -155,5 +166,5 @@ class HealthEndpoint(Endpoint):
     """
     Класс endpoint'а для проверки жизненых показателей сервиса
     """
-    async def handle(self, request: Request, *args, **kwargs):
+    async def handle(self, request: Request, *args, **kwargs) -> BaseHTTPResponse:
         return text("Ok")
