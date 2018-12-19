@@ -95,7 +95,7 @@ class BasicEndpoint(Endpoint):
             if header[:2].lower() == 'x-':
                 body[header] = request.headers[header]
 
-        return await self._method(request=request, body=body, *args, **kwargs)
+        return await self._method(request, body, *args, **kwargs)
 
     async def _method(self, request: Request, body: dict, *args, **kwargs) -> BaseHTTPResponse:
         if request.method == 'GET':

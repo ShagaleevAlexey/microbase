@@ -86,7 +86,7 @@ class Application(object):
     def _prepare_server(self):
         self._server = Sanic(__name__, log_config=self._logging_config)
         self._server.config = self.config
-        self._server.config.LOGO = ""
+        # self._server.config.LOGO = self._server.config.LOGO and None
         self._apply_routes()
         self._apply_hooks()
         self._apply_middlewares()
