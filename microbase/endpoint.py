@@ -123,6 +123,7 @@ class BasicEndpoint(Endpoint):
 
 
 class AuthEndpoint(BasicEndpoint):
+
     """
     Класс endpoint'а для проверки авторизации запроса
     """
@@ -135,17 +136,7 @@ class AuthEndpoint(BasicEndpoint):
                 return self._make_response_json(401)
 
             auth: AuthManager = self.context.auth
-            payload, _ = auth.get_any_payload(jwt_token)
-            user_id = payload['uid']
-            exp = payload['exp']
-            user_type = payload['type']
-
-            params = {
-                'access_token': jwt_token,
-                'user_id': user_id,
-                'exp': exp,
-                'user_type': user_type
-            }
+            params, _ = auth.get_any_payload(jwt_token)
         except ExpiredSignatureError as e:
             return self._make_response_json(401)
         except InvalidSignatureError as e:
