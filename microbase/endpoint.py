@@ -78,7 +78,15 @@ class BasicEndpoint(Endpoint):
             body.update(args)
 
         if request.files is not None and len(request.files) > 0:
-            body.update(request.files)
+            files = {}
+
+            for key in request.files:
+                if isinstance(request.files[key], list):
+                    files[key] = [{'type': file.type, 'body': file.body, 'name': file.name} for file in request.files[key]]
+                else:
+                    files[key] = request.files
+
+            body.update(files)
 
         if request.form is not None and len(request.form) > 0:
             args = request.form

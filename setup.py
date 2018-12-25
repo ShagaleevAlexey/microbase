@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='microbase',
-    version='0.2.1',
+    version='0.2.3',
     packages=find_packages(),
     url='https://github.com/ShagaleevAlexey/microbase',
     license='',
