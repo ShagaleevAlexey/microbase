@@ -26,15 +26,18 @@ class Endpoint(object, metaclass=abc.ABCMeta):
     async def __call__(self, request: Request, *args, **kwargs):
         return await self.handle(request, *args, kwargs)
 
-    def _make_response_json(self, code: int = 200, message: str = None, data: dict = None) -> BaseHTTPResponse:
+    def _make_response_json(self, code: int = 200, message: str = None, data: dict = None, error_code: int = None) -> BaseHTTPResponse:
         if data is not None:
             return json(data)
 
         if message is None:
             message = HTTPStatus(code).phrase
 
+        if error_code is None:
+            error_code = code
+
         data = {
-            'code': code,
+            'code': error_code,
             'message': message
         }
 
