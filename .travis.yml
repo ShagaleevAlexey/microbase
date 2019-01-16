@@ -3,7 +3,7 @@ language: python
 cache: pip
 branches:
   only:
-  - developer
+  - develop
   - /^\d+\.\d+\.\d+$/
 script:
   - python setup.py sdist
