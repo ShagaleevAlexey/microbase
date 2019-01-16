@@ -1,6 +1,10 @@
 dist: xenial
 language: python
 cache: pip
+branches:
+  only:
+  - developer
+  - /^\d+\.\d+\.\d+$/
 script:
   - python setup.py sdist
   - twine upload dist/*.tar.gz
