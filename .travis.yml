@@ -1,0 +1,8 @@
+dist: xenial
+language: python
+cache: pip
+script:
+  - python setup.py sdist
+  - twine upload dist/*.tar.gz
+before_script:
+  - pip install -U twine setuptools
