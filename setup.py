@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='microbase',
-    version='0.2.4',
+    version='0.2.5',
     packages=find_packages(),
     url='https://github.com/ShagaleevAlexey/microbase',
     license='',
@@ -17,3 +17,5 @@ setup(
         'structlog==18.1.0'
     ]
 )
+
+

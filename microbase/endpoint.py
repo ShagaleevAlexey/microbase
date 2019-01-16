@@ -11,7 +11,6 @@ from microbase_auth.auth import DecodeError, ExpiredSignatureError, InvalidSigna
 from sanic.request import Request
 from sanic.response import BaseHTTPResponse, text, json, file
 
-# from .context import Context
 
 class Endpoint(object, metaclass=abc.ABCMeta):
     """
