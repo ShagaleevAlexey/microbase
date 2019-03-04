@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='microbase',
-    version='0.1.11',
+    version='0.1.12',
     packages=find_packages(),
     url='https://github.com/ShagaleevAlexey/microbase',
     license='',
@@ -10,7 +10,7 @@ setup(
     author_email='alexey.shagaleev@yandex.ru',
     description='This is microbase for microservices',
     install_requires=[
-        'microbase-auth==0.1.0',
+        'microbase-auth==0.1.1',
         'sanic==0.7.0',
         'sanic-envconfig==1.0.1',
         'python-rapidjson==0.6.3',
