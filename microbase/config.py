@@ -7,6 +7,11 @@ class LogFormat(Enum):
     plain = 'plain'
 
 
+@EnvConfig.parse(LogFormat)
+def parse_log_format(value: str) -> LogFormat:
+    return LogFormat(value)
+
+
 class BaseConfig(EnvConfig):
     """
     Базовый класс для создания конфигураций
